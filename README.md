@@ -1,2 +1,2 @@
-# 2026-27_Symposium-Project_:_Block-4_Trey_-_Harigovind-Sreeraj
+# 2026-27 Symposium Project : Block-4 Trey - Harigovind Sreeraj
 All of the program files for my freshman year engineering symposium project.
