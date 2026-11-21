@@ -6,9 +6,9 @@ pygame.init()
 # --- Initialization ---
 
 # Constants
-WINDOW_WIDTH = 1200
+WINDOW_CAPTION = "EV3 Robot Simulator"
 WINDOW_HEIGHT = 800
-WINDOW_TITLE = "EV3 Robot Simulator"
+WINDOW_WIDTH = 1200
 
 BLACK = (0, 0, 0)
 BLUE = (50, 120, 220)
@@ -25,7 +25,7 @@ screen = pygame.display.set_mode(
   (WINDOW_WIDTH, WINDOW_HEIGHT)
 )
 
-pygame.display.set_caption(WINDOW_TITLE)
+pygame.display.set_caption(WINDOW_CAPTION)
 
 clock = pygame.time.Clock()
 
@@ -42,3 +42,19 @@ ROOM_PIXEL_HEIGHT = ROOM_HEIGHT * PIXELS_PER_MM
 
 ROOM_X = (WINDOW_WIDTH - ROOM_PIXEL_WIDTH) / 2
 ROOM_Y = (WINDOW_HEIGHT - ROOM_PIXEL_HEIGHT) / 2
+
+# --- Robot initialization ---
+
+# Dimensions
+ROBOT_WIDTH = 180
+WHEEL_DIAMETER = 56
+
+# Reset
+robot_x = ROOM_WIDTH / 2
+robot_y = ROOM_HEIGHT / 2
+robot_angle = 0
+
+left_motor_speed = 0
+right_motor_speed = 0
+
+robot_moving = False
