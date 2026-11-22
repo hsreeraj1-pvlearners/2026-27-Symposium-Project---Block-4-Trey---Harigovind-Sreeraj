@@ -13,7 +13,8 @@ from pybricks.tools import wait
 
 # --- Constants ---
   # Raw Constants
-SPEED = 65  # Degrees per Second
+SPEED = 65  # Degrees per second
+TURN_SPEED = 13  # Degrees per second
 WHEEL_DIAMETER = 56  # Millimeters
   # Calculated Constants
 WHEEL_CIRCUMFERENCE = pi * WHEEL_DIAMETER
@@ -44,15 +45,17 @@ def move(distance):
   right_motor.run_angle(SPEED, motor_angle, wait=True)
 
 def turn(angle):
+  global robot_angle
+  
   starting_angle = -gyro_sensor.angle()
   target_angle = starting_angle + angle
   
   if angle > 0:
-    left_motor.run(-SPEED)
-    right_motor.run(SPEED)
+    left_motor.run(-TURN_SPEED)
+    right_motor.run(TURN_SPEED)
   else:
-    left_motor.run(SPEED)
-    right_motor.run(-SPEED)
+    left_motor.run(TURN_SPEED)
+    right_motor.run(-TURN_SPEED)
     
     while True:
       current_angle = -gyro_sensor.angle()
@@ -62,7 +65,7 @@ def turn(angle):
       elif angle < 0 and current_angle <= target_angle:
         break
       
-      wait(1)
+      wait(10)
 
   left_motor.brake()
   right_motor.brake()
