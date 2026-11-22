@@ -45,9 +45,11 @@ ROOM_Y = (WINDOW_HEIGHT - ROOM_PIXEL_HEIGHT) / 2
 
 # --- Robot initialization ---
 
-# Dimensions
+# Dimensions in millimeters
+ROBOT_LENGTH = 120
 ROBOT_WIDTH = 180
 WHEEL_DIAMETER = 56
+WHEEL_TRACK = 154
 
 # Reset
 robot_x = ROOM_WIDTH / 2
@@ -58,3 +60,62 @@ left_motor_speed = 0
 right_motor_speed = 0
 
 robot_moving = False
+
+# --- Coordinate conversion ---
+
+def world_to_screen(x, y):
+  screen_x = ROOM_X + (x * PIXELS_PER_MM)
+  screen_y = ROOM_Y + ROOM_PIXEL_HEIGHT - (y * PIXELS_PER_MM)
+  
+  return screen_x, screen_y
+
+def screen_to_world(x, y):
+  world_x = (x - ROOM_X) / PIXELS_PER_MM
+  world_y = (ROOM_Y + ROOM_PIXEL_HEIGHT - y) / PIXELS_PER_MM
+
+  return world_x, world_y
+
+# --- Room rendering ---
+
+def draw_room():
+  pygame.draw.rect(
+    screen,
+    WHITE,
+    (ROOM_X, ROOM_Y, ROOM_PIXEL_WIDTH, ROOM_PIXEL_HEIGHT)
+  )
+  
+  pygame.draw.rect(
+    screen,
+    BLACK,
+    (ROOM_X, ROOM_Y, ROOM_PIXEL_WIDTH, ROOM_PIXEL_HEIGHT),
+    3
+  )
+
+# --- Robot rendering ---
+
+def draw_robot():
+  robot_screen_x, robot_screen_y = world_to_screen(
+    robot_x,
+    robot_y,
+  )
+  
+  robot_surface = pygame.Surface(
+    (
+      round(ROBOT_LENGTH * PIXELS_PER_MM),
+      round(ROBOT_WIDTH * PIXELS_PER_MM)
+    ),
+    pygame.SRCALPHA
+  )
+  
+  robot_surface.fill(BLUE)
+  
+  rotated_robot=pygame.transform.rotate(
+    robot_surface,
+    robot_angle
+  )
+  
+  robot_rect = rotated_robot.get_rect(
+    center=(robot_screen_x, robot_screen_y)
+  )
+  
+  screen.blit(rotated_robot, robot_rect)
