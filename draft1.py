@@ -29,7 +29,7 @@ wall_points = []
 wall_x = []
 wall_y = []
 
-# --- Function Definitions---
+# --- Function Definitions ---
 def drive_until_obstacle():
   global robot_x, robot_y, robot_angle
   previous_left_angle = left_motor.angle()
@@ -91,5 +91,5 @@ gyro_sensor.reset_angle(0)
 while True:
   drive_until_obstacle()
   plot_obstacle()
-  random_angle = random.randint(1,359)
+  random_angle = random.randint(1, 359)
   turn(random_angle)
