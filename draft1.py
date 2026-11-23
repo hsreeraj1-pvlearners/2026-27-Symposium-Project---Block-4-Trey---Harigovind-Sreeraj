@@ -9,6 +9,7 @@ from pybricks.tools import wait
 # --- Constants ---
   # Raw constants
 SPEED = 65  # Degrees per second
+OBSTACLE_DISTANCE = 150  # Millimeters
 TURN_SPEED = 13  # Degrees per second
 WHEEL_DIAMETER = 56  # Millimeters
   # Calculated Constants
