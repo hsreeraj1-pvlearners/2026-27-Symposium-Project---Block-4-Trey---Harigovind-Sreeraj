@@ -50,6 +50,8 @@ def drive_until_obstacle():
     robot_x += distance * cos(radians(average_heading))
     robot_y += distance * sin(radians(average_heading))
     robot_angle = current_heading
+    previous_left_angle = left_motor.angle()
+    previous_right_angle = right_motor.angle()
     if ultrasonic_sensor.distance() < OBSTACLE_DISTANCE:
       break
     wait(1)
