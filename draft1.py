@@ -85,11 +85,9 @@ def turn(angle):
   right_motor.brake()
   robot_angle = -gyro_sensor.angle()
 
-gyro_sensor.reset_angle(0)
-
 # --- Main function loop ---
 while True:
   drive_until_obstacle()
   plot_obstacle()
-  random_angle = random.randint(1, 359)
+  random_angle = random.randint(-180, 180)
   turn(random_angle)
