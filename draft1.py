@@ -32,9 +32,9 @@ wall_y = []
 # --- Function Definitions ---
 def drive_until_obstacle():
   global robot_x, robot_y, robot_angle
+  previous_heading = -gyro_sensor.angle()
   previous_left_angle = left_motor.angle()
   previous_right_angle = right_motor.angle()
-  previous_heading = -gyro_sensor.angle()
   left_motor.run(SPEED)
   right_motor.run(SPEED)
   while True:
@@ -50,11 +50,12 @@ def drive_until_obstacle():
     robot_x += distance * cos(radians(average_heading))
     robot_y += distance * sin(radians(average_heading))
     robot_angle = current_heading
-    previous_left_angle = left_motor.angle()
-    previous_right_angle = right_motor.angle()
+    previous_heading = current_heading
+    previous_left_angle = current_left_angle
+    previous_right_angle = current_right_angle
     if ultrasonic_sensor.distance() < OBSTACLE_DISTANCE:
       break
-    wait(1)
+    wait(10)
   left_motor.brake()
   right_motor.brake()
 
@@ -73,16 +74,18 @@ def turn(angle):
   if angle > 0:
     left_motor.run(-TURN_SPEED)
     right_motor.run(TURN_SPEED)
-  else:
+  elif angle < 0:
     left_motor.run(TURN_SPEED)
     right_motor.run(-TURN_SPEED)
+  else:
+    return
   while True:
     current_angle = -gyro_sensor.angle()
     if angle > 0 and current_angle >= target_angle:
       break
     elif angle < 0 and current_angle <= target_angle:
       break
-    wait(1)
+    wait(10)
   left_motor.brake()
   right_motor.brake()
   robot_angle = -gyro_sensor.angle()
