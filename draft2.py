@@ -10,6 +10,7 @@ from pybricks.tools import wait
   # Raw constants
 DETECTION_DISTANCE = 1500  # Millimeters
 DRIVE_SPEED = 65  # Degrees per second
+MAX_CORRECTION = 5
 SIGNATURE_COUNT = 9
 TARGET_WALL_DISTANCE = 120  # Millimeters
 TURN_SPEED = 13  # Degrees per second
@@ -47,6 +48,64 @@ def approach_surface():
         previous_right
       )
     )
+    wait(10)
+  left_motor.brake()
+  right_motor.brake()
+
+def correct_distance():
+  for i in range(MAX_CORRECTIONS):
+    distance = check_distance()
+    if distance > DETETCION_DISTANCE:
+      return False
+    difference = distance - TARGET_DISTANCE
+    if abs(difference) <= DETECTION_TOLERANCE
+      return True
+    correction = min(
+      abs(difference),
+      MAX_CORRECTION_STEP
+    )
+    if difference > 0:
+      drive_distance(correction)
+    else:
+      drive_distance(-correction)
+  return abs(check_distance() - TARGET_DISTANCE) <= (
+    DISTANCE_TOLERANCE
+  )
+
+def drive_distance(distance):
+  previous_heading = -gyro_sensor.angle()
+  previous_left = left_motor.angle()
+  previous_right = right_motor.angle()
+  start_left = previous_left
+  start_right = previous_right
+  target_distance = abs(distance)
+  if distance >= 0:
+    direction = 1
+  else:
+    direction = -1
+  left_motor.run(direction * DRIVE_SPEED)
+  right_motor.run(direction * DRIVE_SPEED)
+  while True:
+    previous_heading, previous_left, previous_right = (
+      update_position(
+        previous_heading,
+        previous_left,
+        previous_right
+      )
+    )
+    left_travel = (
+      (left_motor.angle - start_left)
+      / 360
+    ) * WHEEL_CIRCUMFERENCE
+    right_travel = (
+      (right_motor.angle - start_right)
+      / 360
+    ) * WHEEL_CIRCUMFERENCE
+    average_travel = (
+      direction * (left_travel + right_travel) / 2
+    )
+    if average_travel >= target_distance :
+      break
     wait(10)
   left_motor.brake()
   right_motor.brake()
