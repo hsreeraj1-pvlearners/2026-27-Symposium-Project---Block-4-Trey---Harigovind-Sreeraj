@@ -9,6 +9,7 @@ from pybricks.tools import wait
 # --- Constants ---
   # Raw constants
 DETECTION_DISTANCE = 1500  # Millimeters
+DISTANCE_TOLERANCE = 30  # Millimeters
 DRIVE_SPEED = 65  # Degrees per second
 MAX_CORRECTION = 5
 SIGNATURE_COUNT = 9
@@ -53,12 +54,12 @@ def approach_surface():
   right_motor.brake()
 
 def correct_distance():
-  for i in range(MAX_CORRECTIONS):
+  for i in range(MAX_CORRECTION):
     distance = check_distance()
-    if distance > DETETCION_DISTANCE:
+    if distance > DETECTION_DISTANCE:
       return False
-    difference = distance - TARGET_DISTANCE
-    if abs(difference) <= DETECTION_TOLERANCE
+    difference = distance - TARGET_WALL_DISTANCE
+    if abs(difference) <= DISTANCE_TOLERANCE:
       return True
     correction = min(
       abs(difference),
@@ -68,7 +69,7 @@ def correct_distance():
       drive_distance(correction)
     else:
       drive_distance(-correction)
-  return abs(check_distance() - TARGET_DISTANCE) <= (
+  return abs(check_distance() - TARGET_WALL_DISTANCE) <= (
     DISTANCE_TOLERANCE
   )
 
@@ -94,11 +95,11 @@ def drive_distance(distance):
       )
     )
     left_travel = (
-      (left_motor.angle - start_left)
+      (left_motor.angle() - start_left)
       / 360
     ) * WHEEL_CIRCUMFERENCE
     right_travel = (
-      (right_motor.angle - start_right)
+      (right_motor.angle() - start_right)
       / 360
     ) * WHEEL_CIRCUMFERENCE
     average_travel = (
