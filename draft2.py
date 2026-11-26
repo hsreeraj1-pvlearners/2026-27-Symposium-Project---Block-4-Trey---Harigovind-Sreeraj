@@ -1,7 +1,7 @@
 import random
 from math import cos, pi, radians, sin
 
-from pybricks.ev3devices import GyroSensor, Motor, UltrasonicSensor
+from pybricks.ev3devices import GyroSensor, InfraredSensor, Motor, UltrasonicSensor
 from pybricks.hubs import EV3Brick
 from pybricks.parameters import Port
 from pybricks.tools import wait
@@ -58,10 +58,10 @@ def approach_surface():
   left_motor.brake()
   right_motor.brake()
 
-def check_loop(point):
+def check_loop(point_x, point_y):
   # --- Come back to this ---
 
-def check_signature(point):
+def check_signature(point_x, point_y):
   # --- Come back to this ---
 
 def correct_distance():
@@ -85,7 +85,8 @@ def correct_distance():
   )
 
 def create_signature():
-  # --- Come back to this ---
+  global signature_x, signature_y
+  # --- Come back to this later ---
 
 def drive_distance(distance):
   previous_heading = -gyro_sensor.angle()
