@@ -53,6 +53,12 @@ def approach_surface():
   left_motor.brake()
   right_motor.brake()
 
+def check_loop(point):
+  # --- Come back to this ---
+
+def check_signature(point):
+  # --- Come back to this ---
+
 def correct_distance():
   for i in range(MAX_CORRECTION):
     distance = check_distance()
@@ -72,6 +78,9 @@ def correct_distance():
   return abs(check_distance() - TARGET_WALL_DISTANCE) <= (
     DISTANCE_TOLERANCE
   )
+
+def create_signature():
+  # --- Come back to this ---
 
 def drive_distance(distance):
   previous_heading = -gyro_sensor.angle()
