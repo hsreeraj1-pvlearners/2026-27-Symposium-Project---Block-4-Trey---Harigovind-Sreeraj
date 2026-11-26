@@ -20,10 +20,15 @@ WHEEL_DIAMETER = 56  # Millimeters
 WHEEL_CIRCUMFERENCE = pi * WHEEL_DIAMETER
 # Hardware
 ev3 = EV3Brick()
-gyro_sensor = GyroSensor(Port.S2)
 left_motor = Motor(Port.B)
 right_motor = Motor(Port.A)
 ultrasonic_sensor = UltrasonicSensor(Port.S1)
+# Reset gyro sensor (to prevent drift)
+dummy = InfraredSensor(Port.S2)
+wait(1000)
+gyro_sensor = GyroSensor(Port.S2)
+wait(2000)  # The 2-second pause is to ensure the robot stays still
+gyro_sensor.reset_angle(0)
 # Robot positioning
 robot_angle = 0
 robot_x = 0.00
