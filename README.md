@@ -6,3 +6,6 @@ This draft contains the code which has random mapping. Basic movement is establi
 
 Draft 2:
 In this draft, we take the previous draft and make improve it by not having the robot rebound after just one point. Once it detects an object, it continues to cycle around the entire surface because if you follow the surface of a 3-dimensional object, you are guaranteed to eventually return to where you started. This way, we can map out full objects or connected objects instead of having a cloud of random data that would only resemble the obstacles after an unpredictable amount of time. With this method, we know that we'll map objects all at once, but since we didn't change random exploration, we still wouldn't know when the robot has fully explored a room unless it is checked manually. It also isn't predictable with how long it will take to complete mapping out a room.
+
+Test EV3 File:
+This file is not a contribution to the overall project and acts more as a verification method for the connection between the EV3 and other device (such as a laptop). This also makes sure you method of transferring files works, and since it audibly speaks a message, it is very clear.
