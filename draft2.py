@@ -14,10 +14,12 @@ DRIVE_SPEED = 65  # Degrees per second
 MAX_CORRECTION = 5
 MAX_CORRECTION_STEP = 30  # Millimeters
 SIGNATURE_COUNT = 9
+STEP_LENGTH = 50  # Millimeters
 TARGET_WALL_DISTANCE = 120  # Millimeters
 TURN_SPEED = 13  # Degrees per second
 WHEEL_DIAMETER = 56  # Millimeters
   # Calculated constants
+LOOP_MATCH_TOLERANCE = STEP_LENGTH / 2
 WHEEL_CIRCUMFERENCE = pi * WHEEL_DIAMETER
 # Hardware
 ev3 = EV3Brick()
@@ -65,7 +67,14 @@ def check_loop(point_x, point_y):
   # --- Come back to this ---
 
 def check_signature(point_x, point_y):
-  # --- Come back to this ---
+  if signature_index < 0 or signature_index >= SIGNATURE_COUNT:
+    return False
+  difference_x = point_x - signature_x[signature_index]
+  difference_y = point_y - signature_y[signature_index]
+  distance_squared = (
+    difference_x ** 2 + difference ** 2
+  )
+  return distance_squared <= LOOP_MATCH_TOLERANCE ** 2
 
 def correct_distance():
   for i in range(MAX_CORRECTION):
@@ -89,7 +98,12 @@ def correct_distance():
 
 def create_signature():
   global signature_x, signature_y
-  # --- Come back to this later ---
+  signature_x = wall_x[
+    object_start_index:object_start_index + SIGNATURE_COUNT
+  ]
+  signature_y = wall_y[
+    object_start_index:object_start_index + SIGNATURE_COUNT
+  ]
 
 def drive_distance(distance):
   previous_heading = -gyro_sensor.angle()
@@ -158,6 +172,13 @@ def plot_surface():
   wall_points.append((surface_x, surface_y))
   wall_x.append(surface_x)
   wall_y.append(surface_y)
+
+def read_surface_distance():
+  # The sensor reads points too close/far as 255 cm; unreliable
+  distance = ultrasonic_sensor.distance()
+  if distance >= 2550:
+    return None
+  return distance
 
 def turn(angle):
   global robot_angle
