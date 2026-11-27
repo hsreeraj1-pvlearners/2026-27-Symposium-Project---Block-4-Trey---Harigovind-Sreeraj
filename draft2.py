@@ -12,6 +12,7 @@ DETECTION_DISTANCE = 1500  # Millimeters
 DISTANCE_TOLERANCE = 30  # Millimeters
 DRIVE_SPEED = 65  # Degrees per second
 MAX_CORRECTION = 5
+MAX_CORRECTION_STEP = 30  # Millimeters
 SIGNATURE_COUNT = 9
 TARGET_WALL_DISTANCE = 120  # Millimeters
 TURN_SPEED = 13  # Degrees per second
@@ -37,7 +38,9 @@ robot_y = 0.00
 wall_points = []
 wall_x = []
 wall_y = []
-# Current 
+# Signature point data
+signature_x = []
+signature_y = []
 
 # --- Function definitions ---
 def approach_surface():
@@ -66,7 +69,7 @@ def check_signature(point_x, point_y):
 
 def correct_distance():
   for i in range(MAX_CORRECTION):
-    distance = check_distance()
+    distance = ultrasonic_sensor.distance()
     if distance > DETECTION_DISTANCE:
       return False
     difference = distance - TARGET_WALL_DISTANCE
@@ -80,7 +83,7 @@ def correct_distance():
       drive_distance(correction)
     else:
       drive_distance(-correction)
-  return abs(check_distance() - TARGET_WALL_DISTANCE) <= (
+  return abs(ultrasonic_sensor.distance() - TARGET_WALL_DISTANCE) <= (
     DISTANCE_TOLERANCE
   )
 
