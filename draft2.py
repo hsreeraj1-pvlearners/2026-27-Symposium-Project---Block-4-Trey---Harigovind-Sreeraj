@@ -41,45 +41,62 @@ wall_points = []
 wall_x = []
 wall_y = []
 # Signature point data
+object_start_index = 0
 signature_x = []
 signature_y = []
 
 # --- Function definitions ---
 def approach_surface():
-  previous_heading = -gyro_sensor.angle()
-  previous_left = left_motor.angle()
-  previous_right = right_motor.angle()
-  left_motor.run(DRIVE_SPEED)
-  right_motor.run(DRIVE_SPEED)
-  while ultrasonic_sensor.distance() > TARGET_WALL_DISTANCE:
-    previous_heading, previous_left, previous_right = (
-      update_position(
-        previous_heading,
-        previous_left,
-        previous_right
-      )
+  while True:
+    distance = read_surface_distance()
+    if distance is None:
+      return False
+    difference = distance - TARGET_WALL_DISTANCE
+    if difference <= DISTANCE_TOLERANCE and difference >= 0:
+      return True
+    else:
+      return False
+    correction = min(
+      difference,
+      MAX_CORRECTION_STEP
     )
-    wait(10)
-  left_motor.brake()
-  right_motor.brake()
+    drive_distance(correction)
 
 def check_loop(point_x, point_y):
-  # --- Come back to this ---
+  points_collected = len(wall_x) - object_start_index
+  if len(signature_x) != SIGNATURE_COUNT:
+    return False
+  if points_collected < SIGNATURE_COUNT * 2:
+    return False
+  first_index = len(wall_x) - SIGNATURE_COUNT
+  for i in range(SIGNATURE_COUNT - 1):
+    point_index = first_index + i
+    if not check_signature(
+      wall_x[point_index],
+      wall_y[point_index],
+      i
+    ):
+      return False
+  return check_signature(
+    point_x,
+    point_y,
+    SIGNATURE_COUNT - 1
+  )
 
-def check_signature(point_x, point_y):
+def check_signature(point_x, point_y, signature_index):
   if signature_index < 0 or signature_index >= SIGNATURE_COUNT:
     return False
   difference_x = point_x - signature_x[signature_index]
   difference_y = point_y - signature_y[signature_index]
   distance_squared = (
-    difference_x ** 2 + difference ** 2
+    difference_x ** 2 + difference_y ** 2
   )
   return distance_squared <= LOOP_MATCH_TOLERANCE ** 2
 
 def correct_distance():
   for i in range(MAX_CORRECTION):
-    distance = ultrasonic_sensor.distance()
-    if distance > DETECTION_DISTANCE:
+    distance = read_surface_distance()
+    if distance is None:
       return False
     difference = distance - TARGET_WALL_DISTANCE
     if abs(difference) <= DISTANCE_TOLERANCE:
@@ -92,9 +109,12 @@ def correct_distance():
       drive_distance(correction)
     else:
       drive_distance(-correction)
-  return abs(ultrasonic_sensor.distance() - TARGET_WALL_DISTANCE) <= (
-    DISTANCE_TOLERANCE
-  )
+  distance = read_surface_distance()
+  if distance is None:
+    return False
+  return abs(
+    distance - TARGET_WALL_DISTANCE
+  ) <= DISTANCE_TOLERANCE
 
 def create_signature():
   global signature_x, signature_y
@@ -162,7 +182,9 @@ def drive_until_obstacle():
   right_motor.brake()
 
 def plot_surface():
-  distance = ultrasonic_sensor.distance()
+  distance = read_surface_distance()
+  if distance is None:
+    return None
   surface_x = (
     robot_x + distance * cos(radians(robot_angle))
   )
@@ -172,6 +194,7 @@ def plot_surface():
   wall_points.append((surface_x, surface_y))
   wall_x.append(surface_x)
   wall_y.append(surface_y)
+  return surface_x, surface_y
 
 def read_surface_distance():
   # The sensor reads points too close/far as 255 cm; unreliable
